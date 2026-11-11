@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BharatMart</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500..700&family=Inter:wght@400..600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf6ef;--surface:#fffdf8;--ink:#2a1f16;--muted:#7a6a5a;--line:#e8dfd1;--accent:#c8553d;--accent-ink:#fffdf8;--ok:#2f7d5b;--warn:#b5651d;--glow:#f2b880;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1a1511;--surface:#241d18;--ink:#f3ebe0;--muted:#a89a8a;--line:#3a3029;--accent:#e87f63;--accent-ink:#1a1511;--ok:#6fc79c;--warn:#f0a35e;--glow:#5a3b28}}
+:root[data-theme="dark"]{--bg:#1a1511;--surface:#241d18;--ink:#f3ebe0;--muted:#a89a8a;--line:#3a3029;--accent:#e87f63;--accent-ink:#1a1511;--ok:#6fc79c;--warn:#f0a35e;--glow:#5a3b28}
+*{box-sizing:border-box}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif}
+h1,h2,h3,.brand{font-family:Fraunces,Georgia,serif}
+.top{position:sticky;top:0;z-index:5;display:flex;gap:16px;align-items:center;padding:14px 28px;background:var(--surface);border-bottom:1px solid var(--line)}
+.brand{font-weight:600;font-size:20px;display:flex;align-items:center;gap:10px;white-space:nowrap}
+.logo{width:34px;height:34px;border-radius:10px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:700}
+.search{flex:1;padding:12px 18px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--ink);font:inherit;outline:none}
+.search:focus{border-color:var(--accent)}
+select,.cartbtn,.add,.ghost,.chip,.qty button{font:inherit;cursor:pointer}
+select{padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.cartbtn{padding:10px 18px;border-radius:999px;border:0;background:var(--ink);color:var(--bg);display:flex;gap:8px;align-items:center}
+.badge{background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:0 8px;font-size:13px}
+.wrap{display:grid;grid-template-columns:220px minmax(0,1fr) 340px;gap:28px;padding:28px;max-width:1400px;margin:0 auto}
+.side h4,.pipe h4{margin:22px 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.side h4:first-child{margin-top:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:7px 14px;border-radius:999px}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.check{display:flex;gap:8px;align-items:center;margin-top:18px;color:var(--muted)}
+.bar{margin-bottom:16px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:8px;transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 30px -18px var(--ink)}
+.tile{border:0;border-radius:14px;height:150px;background:linear-gradient(135deg,var(--glow),var(--surface));display:grid;place-items:center;font-size:64px}
+.meta{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.card h3{margin:0;font-size:16px;line-height:1.25;font-weight:600;font-family:Inter,sans-serif}
+.row{display:flex;justify-content:space-between;align-items:center;font-size:13px;gap:8px}
+.row b{font-size:17px}
+.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--accent)}
+.add{margin-top:auto;border:0;border-radius:12px;padding:10px;background:var(--accent);color:var(--accent-ink);font-weight:600}
+.add:disabled{opacity:.4;cursor:not-allowed}
+.empty{grid-column:1/-1;padding:40px;text-align:center;color:var(--muted)}
+.pipe{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;align-self:start;position:sticky;top:90px}
+.ghost{width:100%;margin:12px 0;padding:10px;border-radius:12px;background:transparent;border:1px dashed var(--accent);color:var(--accent)}
+.log{list-style:none;padding:0;margin:0;max-height:360px;overflow:auto;display:flex;flex-direction:column;gap:8px}
+.log li{font-size:13px;padding:10px 12px;border-radius:12px;background:var(--bg);border-left:3px solid var(--muted);display:flex;flex-direction:column}
+.log li b{font-size:11px;letter-spacing:.08em}
+.log small{color:var(--muted);font-size:11px;margin-top:2px}
+.t-PG{border-color:#4a7fd6}.t-KAFKA{border-color:var(--warn)}.t-CONSUMER{border-color:var(--ok)}.t-OPENSEARCH{border-color:#9b6ad6}.t-DEMO{border-color:var(--accent)}
+pre{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:11px;overflow:auto;white-space:pre-wrap;color:var(--muted);margin:0}
+dialog{border:0;border-radius:24px;background:var(--surface);color:var(--ink);padding:28px;width:min(460px,92vw)}
+dialog::backdrop{background:rgba(20,12,6,.45)}
+.head{display:flex;justify-content:space-between;align-items:center}
+.close{border:0;background:none;color:var(--muted);font-size:20px;cursor:pointer}
+.line{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.line small{display:block;color:var(--muted)}
+.ico{font-size:28px}
+.qty{display:flex;gap:8px;align-items:center}
+.qty button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.totalrow{display:flex;justify-content:space-between;font-size:18px;margin:18px 0}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(120px);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:999px;transition:transform .3s;z-index:9}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.big{font-size:90px;text-align:center;background:linear-gradient(135deg,var(--glow),var(--surface));border-radius:18px;padding:30px}
+.muted{color:var(--muted)}.small{font-size:13px}
+@media(max-width:1000px){.wrap{grid-template-columns:1fr}.pipe{position:static}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="logo">B</span>BharatMart</div>
+  <input id="q" class="search" placeholder="Search products, misspellings welcome: try ‘headpones’ or ‘kadhai’" oninput="S.q=this.value;update()">
+  <select id="city" onchange="S.city=+this.value;update()"></select>
+  <button class="cartbtn" onclick="openCart()">Cart <span id="cartn" class="badge">0</span></button>
+</header>
+
+<div class="wrap">
+  <aside class="side">
+    <h4>Category</h4>
+    <div id="cats" class="chips"></div>
+    <h4>Max price · <span id="maxv"></span></h4>
+    <input type="range" id="max" min="300" max="8000" step="100" value="5000" oninput="S.max=+this.value;update()">
+    <label class="check"><input type="checkbox" onchange="S.inStock=this.checked;update()"> In stock in my city</label>
+  </aside>
+
+  <main>
+    <div class="bar" id="count"></div>
+    <section id="grid" class="grid"></section>
+  </main>
+
+  <aside class="pipe">
+    <h4>Live order pipeline</h4>
+    <p class="muted small">Every checkout follows the production path: PostgreSQL commit, Kafka event, consumer, OpenSearch refresh.</p>
+    <button class="ghost" onclick="race()">Demo: two shoppers, one item left</button>
+    <ol id="log" class="log"></ol>
+    <h4>Latest Kafka event</h4>
+    <pre id="evt">Place an order to see the event.</pre>
+  </aside>
+</div>
+
+<dialog id="detail">
+  <div class="head"><span class="meta">Product</span><button class="close" onclick="this.closest('dialog').close()">✕</button></div>
+  <div id="detailBody"></div>
+</dialog>
+
+<dialog id="cartDlg">
+  <div class="head"><h3 style="margin:0">Your cart</h3><button class="close" onclick="this.closest('dialog').close()">✕</button></div>
+  <p class="muted small">Delivering from <span id="cartcity"></span> · change city in the header</p>
+  <div id="cartlist"></div>
+  <div class="totalrow"><span>Total</span><b id="total"></b></div>
+  <button class="add" style="width:100%" onclick="checkout()">Place order</button>
+</dialog>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const inr = n => '₹' + n.toLocaleString('en-IN');
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const CITIES = ['Bengaluru','Mumbai','Delhi','Chennai','Hyderabad'];
+
+// Catalogue. s = stock per city, in CITIES order.
+const P = [
+ {id:'hp',n:'Noise-Cancelling Headphones',c:'Electronics',p:4999,e:'🎧',d:'40-hour battery, foldable, studio-grade sound.',s:[4,0,7,2,5]},
+ {id:'sw',n:'Smartwatch Pro',c:'Electronics',p:7499,e:'⌚',d:'AMOLED display, GPS, seven-day battery.',s:[3,2,1,0,4]},
+ {id:'sp',n:'Bluetooth Speaker',c:'Electronics',p:2199,e:'🔊',d:'Waterproof, 12-hour playback, deep bass.',s:[6,3,0,5,2]},
+ {id:'mo',n:'Wireless Mouse',c:'Electronics',p:899,e:'🖱️',d:'Silent clicks, rechargeable, works on glass.',s:[12,8,9,4,6]},
+ {id:'ds',n:'Ceramic Dinner Set',c:'Home',p:1899,e:'🍽️',d:'18-piece hand-glazed stoneware set.',s:[2,5,3,0,1]},
+ {id:'ki',n:'Cast Iron Kadai',c:'Home',p:1499,e:'🍳',d:'Pre-seasoned, 26 cm, built for deep frying.',s:[5,4,2,6,3]},
+ {id:'wb',n:'Steel Water Bottle',c:'Home',p:499,e:'🥤',d:'Double-wall insulated, cold for 24 hours.',s:[20,15,10,18,12]},
+ {id:'bs',n:'Cotton Bedsheet',c:'Home',p:1299,e:'🛏️',d:'400 thread count, king size, breathable.',s:[4,4,0,3,2]},
+ {id:'ku',n:'Cotton Kurta',c:'Fashion',p:1399,e:'👘',d:'Handwoven cotton, relaxed fit, festive ready.',s:[7,0,5,6,4]},
+ {id:'lw',n:'Leather Wallet',c:'Fashion',p:799,e:'👛',d:'Genuine leather, slim six-card design.',s:[9,6,8,2,5]},
+ {id:'rs',n:'Running Shoes',c:'Fashion',p:2499,e:'👟',d:'Lightweight mesh upper, cushioned sole.',s:[3,6,1,4,0]},
+ {id:'ch',n:'Masala Chai Blend',c:'Grocery',p:349,e:'☕',d:'Hand-blended cardamom and ginger, 250 g.',s:[30,25,22,18,20]},
+ {id:'hn',n:'Organic Forest Honey',c:'Grocery',p:449,e:'🍯',d:'Raw, unfiltered, 500 g jar.',s:[10,8,0,6,9]}
+];
+
+// PostgreSQL = source of truth for stock and orders.
+const pg = {stock: Object.fromEntries(P.map(p => [p.id, [...p.s]])), orders: []};
+// OpenSearch = search index (text for matching, stock copy for filters).
+const os = {docs: Object.fromEntries(P.map(p => [p.id, {text:(p.n+' '+p.c+' '+p.d).toLowerCase(), stock:[...p.s]}]))};
+const S = {city:0, cat:'All', max:5000, inStock:false, q:'', cart:{}};
+
+// Typo-tolerant match: each query word must fuzzily match a token (prefix or small edit distance).
+function lev(a,b){let prev=Array.from({length:b.length+1},(_,j)=>j);for(let i=1;i<=a.length;i++){const cur=[i];for(let j=1;j<=b.length;j++)cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1));prev=cur}return prev[b.length]}
+function hit(q,text){
+  const toks=text.split(/\W+/).filter(Boolean);
+  return q.split(/\s+/).filter(Boolean).every(w=>{
+    const k = w.length>4 ? 2 : 1;
+    return toks.some(t => t.startsWith(w) || lev(w,t)<=k || lev(w,t.slice(0,w.length))<=k);
+  });
+}
+function results(){
+  const q = S.q.trim().toLowerCase();
+  return P.filter(p =>
+    (S.cat==='All' || p.c===S.cat) &&
+    p.p<=S.max &&
+    (!S.inStock || pg.stock[p.id][S.city]>0) &&
+    (!q || hit(q, os.docs[p.id].text))
+  );
+}
+
+function card(p){
+  const st = pg.stock[p.id][S.city], low = st>0 && st<=2;
+  const label = st===0 ? 'Sold out here' : low ? 'Only '+st+' left' : st+' in stock';
+  const cls = st===0 ? 'bad' : low ? 'warn' : 'ok';
+  return `<article class="card">
+    <button class="tile" onclick="show('${p.id}')" aria-label="View ${esc(p.n)}">${p.e}</button>
+    <div class="meta">${p.c}</div>
+    <h3>${esc(p.n)}</h3>
+    <div class="row"><b>${inr(p.p)}</b><span class="${cls}">${label}</span></div>
+    <button class="add" ${st===0?'disabled':''} onclick="add('${p.id}')">Add to cart</button>
+  </article>`;
+}
+
+function render(){
+  const cats = ['All', ...new Set(P.map(p=>p.c))];
+  $('#cats').innerHTML = cats.map(c=>`<button class="chip ${c===S.cat?'on':''}" onclick="S.cat='${c}';update()">${c}</button>`).join('');
+  $('#city').innerHTML = CITIES.map((c,i)=>`<option value="${i}" ${i===S.city?'selected':''}>${c}</option>`).join('');
+  $('#max').value = S.max; $('#maxv').textContent = inr(S.max);
+  const list = results();
+  $('#grid').innerHTML = list.length ? list.map(card).join('') : `<div class="empty">Nothing matches “${esc(S.q)}” with these filters.</div>`;
+  $('#count').textContent = list.length + ' products';
+  $('#cartn').textContent = Object.values(S.cart).reduce((a,b)=>a+b,0);
+}
+function renderCart(){
+  const items = Object.entries(S.cart);
+  $('#cartlist').innerHTML = items.length ? items.map(([id,q])=>{const p=P.find(x=>x.id===id);return `<div class="line">
+      <span class="ico">${p.e}</span>
+      <div><b>${esc(p.n)}</b><small>${inr(p.p)} each</small></div>
+      <div class="qty"><button onclick="changeQty('${id}',-1)">−</button><span>${q}</span><button onclick="changeQty('${id}',1)">+</button></div>
+    </div>`}).join('') : '<p class="muted">Your cart is empty. Browse and add something you like.</p>';
+  $('#total').textContent = inr(items.reduce((s,[id,q])=>s+P.find(x=>x.id===id).p*q,0));
+  $('#cartcity').textContent = CITIES[S.city];
+}
+function update(){ render(); if($('#cartDlg').open) renderCart(); }
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('show'),2200)}
+function log(tag,msg){
+  $('#log').insertAdjacentHTML('afterbegin',`<li class="t-${tag}"><b>${tag}</b>${esc(msg)}<small>${new Date().toLocaleTimeString('en-IN')}</small></li>`);
+}
+
+function show(id){
+  const p = P.find(x=>x.id===id);
+  $('#detailBody').innerHTML = `<div class="big">${p.e}</div>
+    <p class="meta" style="margin:16px 0 4px">${p.c}</p>
+    <h2 style="margin:0 0 8px">${esc(p.n)}</h2>
+    <p>${esc(p.d)}</p>
+    <div class="row"><b>${inr(p.p)}</b></div>
+    <p class="muted small">Stock by city: ${CITIES.map((c,i)=>c+' '+pg.stock[p.id][i]).join(' · ')}</p>
+    <button class="add" style="width:100%" ${pg.stock[p.id][S.city]===0?'disabled':''} onclick="add('${p.id}')">Add to cart</button>`;
+  $('#detail').showModal();
+}
+function add(id){
+  const st = pg.stock[id][S.city], have = S.cart[id]||0;
+  if(have>=st){ toast('Only '+st+' left in '+CITIES[S.city]); return; }
+  S.cart[id] = have+1; update(); toast('Added to cart');
+}
+function changeQty(id,d){
+  const st = pg.stock[id][S.city];
+  const next = (S.cart[id]||0)+d;
+  if(next>st){ toast('Only '+st+' left in '+CITIES[S.city]); return; }
+  if(next<=0) delete S.cart[id]; else S.cart[id]=next;
+  update();
+}
+function openCart(){ $('#cartDlg').showModal(); renderCart(); }
+
+// Checkout step 1: PostgreSQL transaction (BEGIN; SELECT ... FOR UPDATE; check; reserve; INSERT order; COMMIT).
+// Synchronous here, so no two checkouts can interleave on the same rows.
+function placeOrder(items, ci){
+  for(const [id,q] of items) if(pg.stock[id][ci] < q) return {ok:false, id};
+  for(const [id,q] of items) pg.stock[id][ci] -= q;
+  const order = {
+    no: 'BM-' + (1040 + pg.orders.length + 1),
+    city: CITIES[ci],
+    items,
+    total: items.reduce((s,[id,q])=>s+P.find(p=>p.id===id).p*q,0)
+  };
+  pg.orders.push(order);
+  return {ok:true, order};
+}
+
+async function pipeline(o){
+  const ci = CITIES.indexOf(o.city);
+  const names = o.items.map(([id,q])=>P.find(p=>p.id===id).n+' ×'+q).join(', ');
+  log('PG', `Order ${o.no} committed (${names}). Stock reserved with row locks, so no double sale.`);
+  toast(`Order ${o.no} placed ✓`);
+  update();
+
+  await sleep(500);
+  const msg = {topic:'orders.v1', key:o.no, value:{type:'order.placed', city:o.city, items:o.items.map(([id,qty])=>({id,qty})), total:o.total}};
+  $('#evt').textContent = JSON.stringify(msg, null, 2);
+  log('KAFKA', `Published order.placed to orders.v1 (key ${o.no}).`);
+
+  await sleep(800);
+  o.items.forEach(([id,qty])=>{
+    const left = pg.stock[id][ci];
+    log('CONSUMER', `stock-updater: ${P.find(p=>p.id===id).n} −${qty} in ${o.city}, ${left} left${left<=2?' · low-stock alert':''}.`);
+  });
+
+  await sleep(600);
+  o.items.forEach(([id])=>{ os.docs[id].stock[ci] = pg.stock[id][ci]; });
+  log('OPENSEARCH', `Re-indexed ${o.items.length} product doc(s). Stock filters and search now reflect the sale.`);
+  update();
+}
+
+function checkout(){
+  const items = Object.entries(S.cart).filter(([,q])=>q>0);
+  if(!items.length){ toast('Your cart is empty'); return; }
+  const r = placeOrder(items, S.city);
+  if(!r.ok){
+    const p = P.find(x=>x.id===r.id);
+    toast(`Sorry, ${p.n} just sold out in ${CITIES[S.city]}`);
+    log('PG', `Checkout rejected: ${p.n} has insufficient stock. Transaction rolled back.`);
+    update(); return;
+  }
+  S.cart = {};
+  $('#cartDlg').close();
+  pipeline(r.order);
+}
+
+// Demo: two shoppers race for the last Smartwatch Pro in the selected city.
+function race(){
+  const ci = S.city, id = 'sw';
+  pg.stock[id][ci] = 1; update();
+  log('DEMO', `Two shoppers try to buy the last Smartwatch Pro in ${CITIES[ci]}.`);
+  const a = placeOrder([[id,1]], ci);
+  const b = placeOrder([[id,1]], ci);
+  if(a.ok) pipeline(a.order);
+  if(!b.ok) log('PG', 'Shopper B blocked: stock is 0 after shopper A committed. Rolled back, no double sale.');
+}
+
+render();
+log('SYSTEM', 'Ready. Catalogue in PostgreSQL, search index in OpenSearch, events on Kafka. Preview runs these in memory.');
+</script>
+</body>
+</html>
